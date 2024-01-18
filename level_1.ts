@@ -24,7 +24,7 @@ class Config implements JetLagGameConfig {
     resourcePrefix = "./assets/";
     musicNames = ["doop.mp3"];
     soundNames = [];
-    imageNames = ["player.png", "mustard_ball.png", "noise.png", "playerClear.png",
+    imageNames = ["player_e.png", "mustard_ball.png", "noise.png", "playerClear_e.png",
         "purple_ball.png", "red_ball.png", "wall_internal.png", "wall_down.png",
         "wall_up.png", "wall_left.png", "wall_right.png"];
 }
@@ -40,41 +40,41 @@ function builder(level: number) {
         // Define the maze layout with walls, a hero, a destination, and a goodie
         const mazeLayout = [
             "#dd#############################################################",
-            "#  #dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
-            "#                                                               ",
-            "#                                                               ",
-            "#  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
-            "#  l#####################################################r  l###",
-            "#  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
-            "#                                                               ",
-            "#                                                               ",
-            "#  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
-            "#                                                               ",
-            "#                                                               ",
-            "#  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  l#####################################################r  l###",
-            "#  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
-            "#                                                               ",
-            "#                                                               ",
-            "#  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
-            "#  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
-            "#                                                               ",
-            "#                                                               ",
-            "#  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
-            "#  l############################################################",
-            "#  l############################################################",
-            "#  l############################################################",
-            "#  l############################################################",
-            "#  #dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "r  #dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+            "r                                                               ",
+            "r                                                               ",
+            "r  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
+            "r  l#####################################################r  l###",
+            "r  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
+            "r                                                               ",
+            "r                                                               ",
+            "r  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
+            "r                                                               ",
+            "r                                                               ",
+            "r  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  l#####################################################r  l###",
+            "r  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
+            "r                                                               ",
+            "r                                                               ",
+            "r  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu#  #uuu",
+            "r  #ddddddddddddddddddddddddddddddddddddddddddddddddddddd#  #ddd",
+            "r                                                               ",
+            "r                                                               ",
+            "r  #uuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuuu",
+            "r  l############################################################",
+            "r  l############################################################",
+            "r  l############################################################",
+            "r  l############################################################",
+            "r  #dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
         ];
 
         for (let row = 0; row < mazeLayout.length; row++) {
@@ -120,7 +120,7 @@ function builder(level: number) {
 
     //properties of our hero
     let hero = new Actor({
-        appearance: new ImageSprite({ width: 0.6, height: 1, img: "player.png" }),
+        appearance: new ImageSprite({ width: 0.6, height: 1, img: "player_e.png" }),
         rigidBody: new BoxBody({ cx: 2, cy: 35, width: 0.6, height: 1 }, { disableRotation: true }),
         role: new Hero({ strength: 1 }),
         movement: new ManualMovement(),
@@ -130,7 +130,7 @@ function builder(level: number) {
     //Allows hero to change and complete level
     let onCollect = (_g: Actor, h: Actor) => {
         let s = ++(h.role as Hero).strength;
-        (h.appearance as ImageSprite).setImage("playerClear.png");
+        (h.appearance as ImageSprite).setImage("playerClear_e.png");
         h.extra.collected = true;
         return true;
     }
@@ -247,12 +247,13 @@ function builder(level: number) {
         rigidBody: new BoxBody({ cx: 8, cy: 4, width: 16, height: 9 }, { scene: stage.hud }),
         gestures: {
             tap: () => {
+                console.log(stage.world.camera.getScale())
                 if (stage.world.camera.getScale() > 40) {
-                    stage.world.camera.setScale(stage.world.camera.getScale() - 40);
+                    stage.world.camera.setScale(stage.world.camera.getScale() / 2);
                     return true;
 
                 } else {
-                    if (stage.world.camera.getScale() < 40) stage.world.camera.setScale(stage.world.camera.getScale() + 40);
+                    if (stage.world.camera.getScale() < 40) stage.world.camera.setScale(stage.world.camera.getScale() * 2);
                     return true;
                 }
             }
