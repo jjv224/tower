@@ -25,7 +25,6 @@ export function splashBuilder(_level: number) {
   // Paint the background white
   stage.backgroundColor = "#33ccff";
 
-  // Draw a brown box at the top of the screen, put some text in it
   new Actor({
     appearance: new FilledBox({ width: 16, height: 3, fillColor: "#FFFFFF" }),
     rigidBody: new BoxBody({ cx: 8, cy: 1.5, width: 16, height: 3 }),
@@ -39,29 +38,18 @@ export function splashBuilder(_level: number) {
     rigidBody: new BoxBody({ cx: 8, cy: 2.4, width: .1, height: .1 }),
   });
 
-  // Draw some text.  Tapping its *rigidBody* will go to the first page of the
-  // level chooser
   new Actor({
     appearance: new TextSprite({ center: true, face: "Arial", size: 96, color: "#000000" }, "Play"),
     rigidBody: new BoxBody({ cx: 8, cy: 5.625, width: 2.5, height: 1.25 }),
     gestures: { tap: () => { stage.switchTo(chooserBuilder, 1); return true; } }
   });
 
-  // Make some text for going to the help screen
   new Actor({
     appearance: new TextSprite({ center: true, face: "Arial", size: 72, color: "#000000" }, "Help"),
     rigidBody: new BoxBody({ cx: 3.2, cy: 6.15, width: 1.8, height: 0.9 }),
     gestures: { tap: () => { stage.switchTo(helpBuilder, 1); return true; } }
   });
 
-  // Make a quit button.  This is probably not useful in browser games, only
-  // mobile/desktop.
-//   new Actor({
-//     appearance: new TextSprite({ center: true, face: "Arial", size: 72, color: "#000000" }, "Quit"),
-//     rigidBody: new BoxBody({ cx: 12.75, cy: 6.15, width: 1.8, height: 0.9 }),
-//     gestures: { tap: () => { stage.exit(); return true; } }
-//   });
 
-  // And a mute button...
   drawMuteButton({ cx: 15, cy: 8, width: .75, height: .75, scene: stage.world });
 }

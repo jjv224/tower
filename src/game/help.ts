@@ -40,14 +40,14 @@ export function helpBuilder(level: number) {
       rigidBody: new BoxBody({ cx: 1.5, cy: 2.25, width: .1, height: .1, }),
     });
 
-    // new Actor({
-    //   appearance: new ImageSprite({ width: 0.75, height: 0.75, img: "blue_ball.png" }),
-    //   rigidBody: new CircleBody({ cx: 0.75, cy: 3.5, radius: 0.375 }),
-    // });
-    // new Actor({
-    //   appearance: new TextSprite({ center: false, face: "Arial", color: "#000000", size: 24 }, "Collect these goodies"),
-    //   rigidBody: new BoxBody({ cx: 1.5, cy: 3.25, width: .1, height: .1 }),
-    // });
+    new Actor({
+      appearance: new ImageSprite({ width: 0.75, height: 0.75, img: "playerClear.png" }),
+      rigidBody: new CircleBody({ cx: 0.75, cy: 3.5, radius: 0.375 }),
+    });
+    new Actor({
+      appearance: new TextSprite({ center: false, face: "Arial", color: "#000000", size: 24 }, "Changes to this character when the hero picks up the power-up/key"),
+      rigidBody: new BoxBody({ cx: 1.5, cy: 3.25, width: .1, height: .1 }),
+    });
 
     // new Actor({
     //   appearance: new ImageSprite({ width: 0.75, height: 0.75, img: "red_ball.png" }),

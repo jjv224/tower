@@ -3,7 +3,7 @@ import { FilledBox, ImageSprite, TextSprite } from "../jetlag/Components/Appeara
 import { stage } from "../jetlag/Stage";
 import { BoxBody } from "../jetlag/Components/RigidBody";
 import { splashBuilder } from "./splash";
-import { gameBuilder } from "./play";
+import { builder } from "./play"
 import { MusicComponent } from "../jetlag/Components/Music";
 
 export function chooserBuilder(level: number) {
@@ -26,6 +26,12 @@ export function chooserBuilder(level: number) {
     drawLevelButton(11, 4, 2);
   }
 
+    // Add a button for returning to the splash screen
+    new Actor({
+      appearance: new ImageSprite({ width: 1, height: 1, img: "back_arrow.png" }),
+      rigidBody: new BoxBody({ width: 1, height: 1, cx: 15.5, cy: 8.5 }),
+      gestures: { tap: () => { stage.switchTo(splashBuilder, 1); return true; } }
+    });
 //   if (level < 2) {
 //     new Actor({
 //       appearance: new ImageSprite({ width: 1, height: 1, img: "right_arrow.png" }),
@@ -52,7 +58,7 @@ function drawLevelButton(cx: number, cy: number, level: number) {
   new Actor({
     appearance: new ImageSprite({ width: 2, height: 2, img: "level_tile.png" }),
     rigidBody: new BoxBody({ cx, cy, width: 2, height: 2 }),
-    gestures: { tap: () => { stage.switchTo(gameBuilder, level); return true; } }
+    gestures: { tap: () => { stage.switchTo(builder, level); return true; } }
   });
   new Actor({
     appearance: new TextSprite({ center: true, face: "Arial", color: "#FFFFFF", size: 56, z: 0 }, () => level + ""),

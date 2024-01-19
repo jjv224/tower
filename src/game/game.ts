@@ -17,7 +17,11 @@ class Config implements JetLagGameConfig {
     resourcePrefix = "./assets/";
     musicNames = ["doop.mp3"];
     soundNames = ["doop.mp3"];
-    imageNames = ["sprites.json", "player.png"];
+    imageNames = ["audio_on.png", "audio_off.png", "Enemy.png", "key.png", "projectileW.png","projectile.png", "player_w.png", "player_walk.png", "player_walk_new.png", 
+    "player_idle.png","idle_w.png", "player_wwalk.png", "green_ball.png", "blue_ball.png", "grey_ball.png", "mid.png", "player_e.png", "mustard_ball.png", "noise.png", "playerClear_e.png", "playerClear_Ewalk.png",
+        "purple_ball.png", "red_ball.png", "wall_internal.png", "wall_down.png",
+        "wall_up.png", "wall_left.png", "wall_right.png", "wall_topright.png",
+        "wall_topleft.png", "wall_bottomleft.png", "wall_bottomright.png", "sprites.json", "player.png"];
 }
 
 // call the function that kicks off the game
