@@ -12,6 +12,8 @@ import { DIRECTION } from "../jetlag/Components/StateManager";
 import { GridSystem } from "../jetlag/Systems/Grid"
 import { ActorPoolSystem } from "../jetlag/Systems/ActorPool"
 import { AnimatedSprite } from "../jetlag/Components/Appearance";
+import { MusicComponent } from "../jetlag/Components/Music";
+import { Scene } from "../jetlag/Entities/Scene";
 
 /**
  * Screen dimensions and other game configuration, such as the names of all
@@ -26,9 +28,9 @@ class Config implements JetLagGameConfig {
   storageKey = "--no-key--";
   hitBoxes = false ;
   resourcePrefix = "./assets/";
-  musicNames = [];
+  musicNames = ["doopdoop.ogg"];
   soundNames = [];
-  imageNames = ["Enemy.png", "key.png", "projectileW.png","projectile.png", "player.png", "player_w.png", "player_walk.png", "player_walk_new.png", "player_idle.png","idle_w.png", "player_wwalk.png", "green_ball.png", "purple_ball.png", "blue_ball.png", "red_ball.png", "grey_ball.png", "mustard_ball.png", "mid.png"];}
+  imageNames = ["audio_on.png", "audio_off.png", "Enemy.png", "key.png", "projectileW.png","projectile.png", "player.png", "player_w.png", "player_walk.png", "player_walk_new.png", "player_idle.png","idle_w.png", "player_wwalk.png", "green_ball.png", "purple_ball.png", "blue_ball.png", "red_ball.png", "grey_ball.png", "mustard_ball.png", "mid.png"];}
 
 /**
  * Build the levels of the game.
@@ -36,6 +38,62 @@ class Config implements JetLagGameConfig {
  * @param level Which level should be displayed
  */
 function builder(level: number) {
+
+   function drawMuteButton(cfg: { cx: number, cy: number, width: number, height: number, scene: Scene }) {
+    // Draw a mute button
+    let getVolume = () => (stage.storage.getPersistent("volume") ?? "1") === "1";
+    let mute = new Actor({
+      appearance: new ImageSprite({ width: cfg.width, height: cfg.height, img: "audio_off.png" }),
+      rigidBody: new BoxBody({ cx: cfg.cx, cy: cfg.cy, width: cfg.width, height: cfg.height }, { scene: stage.hud }),
+    });
+    // If the game is not muted, switch the image
+    if (getVolume())
+      (mute.appearance as ImageSprite).setImage("audio_on.png");
+    // when the obstacle is touched, switch the mute state and update the picture
+    mute.gestures = {
+      tap: () => {
+        // volume is either 1 or 0, switch it to the other and save it
+        let volume = 1 - parseInt(stage.storage.getPersistent("volume") ?? "1");
+        stage.storage.setPersistent("volume", "" + volume);
+        // update all music
+        stage.musicLibrary.resetMusicVolume(volume);
+  
+        if (getVolume()) (mute.appearance as ImageSprite).setImage("audio_on.png");
+        else (mute.appearance as ImageSprite).setImage("audio_off.png");
+        return true;
+      }
+    };
+  }
+
+  function welcomeMessage(message: string) {
+    // Immediately install the overlay, to pause the game
+    stage.requestOverlay((overlay: Scene) => {
+      // Pressing anywhere on the black background will make the overlay go away
+      new Actor({
+        appearance: new FilledBox({ width: 16, height: 9, fillColor: "#000000" }),
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: 16, height: 9 }, { scene: overlay }),
+        gestures: {
+          tap: () => {
+            stage.clearOverlay();
+            return true;
+          }
+        },
+      });
+      // The text goes in the middle
+      new Actor({
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: .1, height: .1 }, { scene: overlay }),
+        appearance: new TextSprite({ center: true, face: "Arial", color: "#FFFFFF", size: 28, z: 0 }, () => message),
+      });
+    }, false);
+  }
+
+  welcomeMessage("Collect Two Keys, and Avoid Enemies...\nYou've Powered Up and Can Now Shoot Fireballs Using (Space)");
+  drawMuteButton({ cx: 15, cy: 8, width: .75, height: .75, scene: stage.world });
+
+  if (stage.gameMusic === undefined)
+    stage.gameMusic = new MusicComponent(stage.musicLibrary.getMusic("doopdoop.ogg"));
+  stage.gameMusic.play();
+
 
   // Draw a grid on the screen, covering the whole visible area
   //GridSystem.makeGrid(stage.world, { x: 0, y: 0 }, { x: 64, y: 64 });
@@ -137,7 +195,7 @@ function builder(level: number) {
     });
 
   //Zoom function
-  /*
+  
   new Actor({
     appearance: new FilledBox({ width: 8, height: 9, fillColor: "#00000000" }),
     rigidBody: new BoxBody({ cx: 4, cy: 4.5, width: 8, height: 9 }, { scene: stage.hud }),
@@ -157,7 +215,7 @@ function builder(level: number) {
         return true;
       }
     }
-  });*/
+  });
 
   /*stage.keyboard.setKeyDownHandler(KeyCodes.KEY_SPACE, () => {
     let p = new Actor({
@@ -183,13 +241,13 @@ function builder(level: number) {
   stage.backgroundColor = "#8B8B8B";
 
   new Actor({
-    appearance: new ImageSprite({ width: 2, height: 2, img: "key.png" }),
-    rigidBody: new BoxBody({ cx: 27, cy: 16, width: 2, height: 2}),
+    appearance: new ImageSprite({ width: 1.5, height: 1.5, img: "key.png" }),
+    rigidBody: new BoxBody({ cx: 14.25, cy: 0.5, width: 2, height: 2}, {scene: stage.hud}),
     role: new Goodie(),
   });
   
   new Actor({
-    appearance: new TextSprite({ center: false, face: "Arial", size: 36, color: "#ffffff" }, () => "x " + stage.score.getGoodieCount(0)),
+    appearance: new TextSprite({ center: false, face: "Arial", size: 36, color: "#ffffff" }, () => ": " + stage.score.getGoodieCount(0) + " / 2"),
     rigidBody: new CircleBody({ radius: .01, cx: 15, cy: 0.25 }, { scene: stage.hud }),
     role: new Goodie(),
   });
@@ -254,8 +312,10 @@ function builder(level: number) {
   longPlatform(62,49);
 
  //Plat 6
+  enemy(57.25,45.5);
   longPlatform(60, 46);
   longPlatform(62,46);
+
 
   platform(54,43);
 
@@ -263,13 +323,24 @@ function builder(level: number) {
   longPlatform(42,40);
   longPlatform(36,40);
   longPlatform(30,40);
+  new Actor({
+    appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
+    rigidBody: new CircleBody({ radius: .5, cx: 27.5, cy: 35.5 }),
+    role: new Enemy(),
+    movement: new PathMovement(new Path().to(27.5, 39.5).to(51, 39.5).to(27.5, 39.5), 5, true),
+  });
+
 
   longPlatform(24, 37);
   longPlatform(18, 37);
 
+  enemy(20, 33.5);
   platform(20,34);
+  enemy(22, 30.5)
   platform(22,31);
+  enemy(18,27.5);
   platform(18, 28);
+  enemy(24, 25.5);
   platform(24, 26);
   platform(32, 26);
 
@@ -278,7 +349,9 @@ function builder(level: number) {
   
   platform(43, 23);
   platform(39, 23);
+  enemy(48, 19.5)
   platform(48, 20);
+  enemy(34, 19.5)
   longPlatform(34, 20);
   longPlatform(26, 17);
 
@@ -288,14 +361,43 @@ function builder(level: number) {
 
   //Enemies (KeyMonster anwd Lackeys)
 
+  function enemy(cx: number, cy: number) {
+    new Actor({
+      appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
+      rigidBody: new CircleBody({ cx, cy, radius: 0.5 }),
+      role: new Enemy(),
+    });
+  }
   
     // create an enemy who chases the hero
+
     new Actor({
       appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
       rigidBody: new CircleBody({ cx: 5, cy: 63.5, radius: 0.5 }),
       movement: new ChaseMovement({ speed: 1, target: h , chaseInX: true, chaseInY: false}),
       role: new Enemy(),
     });
+    new Actor({
+      appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
+      rigidBody: new CircleBody({ radius: .5, cx: 3.5, cy: 60.5 }),
+      role: new Enemy(),
+      movement: new PathMovement(new Path().to(3.5, 60.5).to(14.5, 60.5).to(3.5, 60.5), 5, true),
+    });
+    new Actor({
+      appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
+      rigidBody: new CircleBody({ radius: .5, cx: 15.5, cy: 57.5 }),
+      role: new Enemy(),
+      movement: new PathMovement(new Path().to(15.5, 57.5).to(26.5, 57.5).to(15.5, 57.5), 5, true),
+    });
+    new Actor({
+      appearance: new ImageSprite({ width: 2, height: 2, img: "Enemy.png" }),
+      rigidBody: new CircleBody({ radius: .5, cx: 27.5, cy: 54.5 }),
+      role: new Enemy(),
+      movement: new PathMovement(new Path().to(27.5, 54.5).to(38.5, 54.5).to(27.5, 54.5), 5, true),
+    });
+    
+    enemy(54,42.5);
+
   
 
   //Key and Destination
@@ -303,38 +405,67 @@ function builder(level: number) {
   new Actor({
     appearance: new ImageSprite({ width: 0.8, height: 0.8, img: "mustard_ball.png" }),
     rigidBody: new CircleBody({ cx: 60, cy: 16, radius: 0.4 }),
-    role: new Destination({ onAttemptArrival: (h: Actor) => stage.score.getGoodieCount(0) > 0 && h.extra.collected }),
+    role: new Destination({ onAttemptArrival: (h: Actor) => stage.score.getGoodieCount(0) == 2 }),
   });
 
   new Actor({
     appearance: new ImageSprite({ width: 2, height: 2, img: "key.png" }),
     rigidBody: new BoxBody({ cx: 27, cy: 16, width: 2, height: 2}),
-    role: new Goodie(),
+    role: new Goodie({ onCollect: () => { stage.score.addToGoodieCount(0, 1); return true; } }),
   });
 
   new Actor({
     appearance: new ImageSprite({ width: 2, height: 2, img: "key.png" }),
     rigidBody: new BoxBody({ cx: 62, cy: 63, width: 2, height: 2}),
-    role: new Goodie({ onCollect: (_g: Actor, h: Actor) => { h.extra.collected = true; return true; } }),
+    role: new Goodie({ onCollect: () => { stage.score.addToGoodieCount(0, 1); return true; } }),
   });
 
   stage.score.onLose = { level, builder };
   stage.score.onWin = { level, builder };
 
-  /*// Set a timer for losing
-  stage.score.setLoseCountdownRemaining(10);
-  stage.score.onLose = { level: level, builder: builder }
+  function winMessage(message: string) {
+    stage.score.winSceneBuilder = (overlay: Scene) => {
+      new Actor({
+        appearance: new FilledBox({ width: 16, height: 9, fillColor: "#000000" }),
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: 16, height: 9 }, { scene: overlay }),
+        gestures: {
+          tap: () => {
+            stage.clearOverlay();
+            stage.switchTo(stage.score.onWin.builder, stage.score.onWin.level);
+            return true;
+          }
+        },
+      });
+      new Actor({
+        appearance: new TextSprite({ center: true, face: "Arial", color: "#FFFFFF", size: 28, z: 0 }, message),
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: .1, height: .1 }, { scene: overlay }),
+      });
+    };
+  }
 
-  // Draw a box, and write the timer on top of it.  Both go on the HUD
-  new Actor({
-    appearance: new FilledBox({ width: .75, height: .75, fillColor: "#eeeeee", lineWidth: 3, lineColor: "#000000" }),
-    rigidBody: new BoxBody({ cx: 8, cy: .75, width: .75, height: .75 }, { scene: stage.hud }),
-  });
-  new Actor({
-    appearance: new TextSprite({ center: true, face: "Arial", color: "#444444", size: 48 }, 
-                               () => (stage.score.getLoseCountdownRemaining() ?? 0).toFixed(0)),
-    rigidBody: new BoxBody({ cx: 8, cy: .75, width: 1.8, height: 1 }, { scene: stage.hud }),
-  });*/
+  function loseMessage(message: string) {
+    stage.score.loseSceneBuilder = (overlay: Scene) => {
+      new Actor({
+        appearance: new FilledBox({ width: 16, height: 9, fillColor: "#000000" }),
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: 16, height: 9 }, { scene: overlay }),
+        gestures: {
+          tap: () => {
+            stage.clearOverlay();
+            stage.switchTo(stage.score.onLose.builder, stage.score.onLose.level);
+            return true;
+          }
+        },
+      });
+      new Actor({
+        appearance: new TextSprite({ center: true, face: "Arial", color: "#FFFFFF", size: 28, z: 0 }, message),
+        rigidBody: new BoxBody({ cx: 8, cy: 4.5, width: .1, height: .1 }, { scene: overlay }),
+      })
+    };
+  }
+
+  winMessage("You WIN!!!");
+  loseMessage("Try Again :)");
+
 }
 
 // call the function that starts running the game in the `game-player` div tag
